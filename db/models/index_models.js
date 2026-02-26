@@ -1,0 +1,1 @@
+// No models currently in use. Raw SQL queries are handled directly in service files.
