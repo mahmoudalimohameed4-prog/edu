@@ -1,4 +1,7 @@
 import { connected } from "../../db/database.connection.js";
+import sharp from "sharp";
+import path from "path";
+import fs from "fs";
 
 /**
  * Get all items
@@ -25,15 +28,37 @@ export const getItemById = async (id) => {
 /**
  * Create a new item
  */
-export const createItem = async (data) => {
+export const createItem = async (data, file) => {
     const { name, categoryId, description, condition, price, quantity, sellerId, status } = data;
     const db = await connected();
     const [result] = await db.execute(
         'INSERT INTO items (It_name, Cat_id, It_description, It_condition, It_price, It_quantity, seller_id, It_status, It_created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())',
-        [name, categoryId, description, condition, price, quantity, sellerId, status]
+        [name, categoryId, description, condition, price, quantity, sellerId, status || 'available']
     );
-    return { id: result.insertId, ...data };
+
+    const itemId = result.insertId;
+
+    if (file) {
+        const resizedPath = `uploads/items/resized-${path.basename(file.path)}`;
+
+        // Resize image
+        await sharp(file.path)
+            .resize(500, 500, { fit: 'inside' })
+            .toFile(resizedPath);
+
+        // Optional: remove original file
+        // fs.unlinkSync(file.path);
+
+        // Store in item_images
+        await db.execute(
+            'INSERT INTO item_images (It_id, Img_path, is_primary, Img_created_at) VALUES (?, ?, ?, NOW())',
+            [itemId, resizedPath, 1]
+        );
+    }
+
+    return { id: itemId, ...data, imagePath: file ? file.path : null };
 };
+
 
 /**
  * Create item image

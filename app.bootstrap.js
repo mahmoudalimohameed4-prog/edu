@@ -26,6 +26,8 @@ const bootstrap = () => {
 
   //global app middleware
   app.use(express.json())
+  app.use('/uploads', express.static('uploads'))
+
 
   //routing
   app.get('/', (req, res) => {

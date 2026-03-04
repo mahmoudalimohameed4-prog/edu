@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, signup } from "./auth.service.js";
+import { login, signup, googleLogin } from "./auth.service.js";
 const router = Router();
 
 router.post('/signup', async (req, res) => {
@@ -24,4 +24,23 @@ router.post('/login', async (req, res) => {
         });
     }
 });
+
+router.post('/google-login', async (req, res) => {
+    try {
+        const { idToken } = req.body;
+        if (!idToken) {
+            return res.status(400).json({ msg: 'idToken is required' });
+        }
+        const result = await googleLogin(idToken);
+        return res.status(200).json({
+            msg: 'done-google-login',
+            data: result
+        });
+    } catch (error) {
+        return res.status(400).json({
+            msg: error.message
+        });
+    }
+});
+
 export default router;

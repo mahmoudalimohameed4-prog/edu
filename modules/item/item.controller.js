@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getAllItems, getItemById, createItem, updateItem, deleteItem, createItemImage } from "./item.service.js";
 import { auth } from "../../middlewares/auth.middleware.js";
+import { upload } from "../../middlewares/multer.middleware.js";
 
 const router = Router();
 
@@ -23,14 +24,15 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, upload.single('image'), async (req, res) => {
     try {
-        const newItem = await createItem({ ...req.body, sellerId: req.user.id });
+        const newItem = await createItem({ ...req.body, sellerId: req.user.id }, req.file);
         return res.status(201).json({ msg: 'created', data: newItem });
     } catch (error) {
         return res.status(500).json({ msg: error.message });
     }
 });
+
 
 router.post('/image', auth, async (req, res) => {
     try {
