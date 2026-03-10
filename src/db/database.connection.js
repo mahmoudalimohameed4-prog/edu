@@ -17,9 +17,12 @@ const getPool = () => {
             port: Number(process.env.DB_PORT) || 3306,
             password: process.env.DB_PASSWORD || '',
             database: process.env.DB_NAME || 'eduswap_fixed',
+            // --- Support for Remote Databases (like Aiven) requiring SSL ---
+            ssl: process.env.DB_HOST?.includes('aivencloud') ? { rejectUnauthorized: false } : undefined,
+            // -------------------------------------------------------------
             waitForConnections: true,
-            connectionLimit: 10,      // Max 10 concurrent connections
-            queueLimit: 0,            // Unlimited queue
+            connectionLimit: 10,
+            queueLimit: 0,
             enableKeepAlive: true,
             keepAliveInitialDelay: 0,
         });
