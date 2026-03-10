@@ -1,0 +1,186 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+@import "tailwindcss";
+* {
+  font-family: "Cairo", sans-serif;
+}
+
+@theme {
+  --color-primary: #1f4b8f;
+  --color-primary-50: color-mix(in srgb, var(--color-primary) 10%, white);
+  --color-primary-100: color-mix(in srgb, var(--color-primary) 20%, white);
+  --color-primary-200: color-mix(in srgb, var(--color-primary) 35%, white);
+  --color-primary-300: color-mix(in srgb, var(--color-primary) 50%, white);
+  --color-primary-400: color-mix(in srgb, var(--color-primary) 70%, white);
+  --color-primary-500: var(--color-primary);
+  --color-primary-600: color-mix(in srgb, var(--color-primary) 88%, black);
+  --color-primary-700: color-mix(in srgb, var(--color-primary) 75%, black);
+  --color-primary-800: color-mix(in srgb, var(--color-primary) 60%, black);
+  --color-primary-900: color-mix(in srgb, var(--color-primary) 45%, black);
+}
+
+:root {
+  --app-gradient-start: var(--color-primary-900);
+  --app-gradient-mid: var(--color-primary-700);
+  --app-gradient-end: var(--color-primary-600);
+}
+
+.font-poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-primary: #7aa6e8;
+  --color-primary-50: #0f1829;
+  --color-primary-100: #142038;
+  --color-primary-200: #1a2b49;
+  --color-primary-300: #254069;
+  --color-primary-400: #3e67a1;
+  --color-primary-500: var(--color-primary);
+  --color-primary-600: #8db4ea;
+  --color-primary-700: #b0cbee;
+  --color-primary-800: #c8dcf5;
+  --color-primary-900: #e5eefb;
+
+  --color-slate-50: #0b1220;
+  --color-slate-100: #111827;
+  --color-slate-200: #1f2937;
+  --color-slate-300: #334155;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #cbd5e1;
+  --color-slate-700: #e2e8f0;
+  --color-slate-800: #f1f5f9;
+  --color-slate-900: #f8fafc;
+
+  --color-gray-50: var(--color-slate-50);
+  --color-gray-100: var(--color-slate-100);
+  --color-gray-200: var(--color-slate-200);
+  --color-gray-300: var(--color-slate-300);
+  --color-gray-400: var(--color-slate-400);
+  --color-gray-500: var(--color-slate-500);
+  --color-gray-600: var(--color-slate-600);
+  --color-gray-700: var(--color-slate-700);
+  --color-gray-800: var(--color-slate-800);
+  --color-gray-900: var(--color-slate-900);
+
+  --color-red-50: #2a1215;
+  --color-red-100: #3a171d;
+  --color-red-200: #5b212a;
+  --color-red-300: #7f2d39;
+  --color-red-400: #b24b5c;
+  --color-red-500: #dc6b7f;
+  --color-red-600: #ef8ca0;
+  --color-red-700: #f3acbc;
+  --color-red-800: #f8ccd6;
+  --color-red-900: #fdebf0;
+
+  --color-amber-50: #2d2412;
+  --color-amber-100: #40331a;
+  --color-amber-200: #5c4a25;
+  --color-amber-300: #7f6530;
+  --color-amber-400: #b39144;
+  --color-amber-500: #d8b35f;
+  --color-amber-600: #e8c57f;
+  --color-amber-700: #f2d8a2;
+  --color-amber-800: #fae8c6;
+  --color-amber-900: #fdf5e5;
+
+  --color-green-50: #0f2419;
+  --color-green-100: #163425;
+  --color-green-200: #1f4a35;
+  --color-green-300: #2e6b4c;
+  --color-green-400: #44956c;
+  --color-green-500: #5fb38a;
+  --color-green-600: #80c8a4;
+  --color-green-700: #a3dcc0;
+  --color-green-800: #c7eddc;
+  --color-green-900: #e6f8ef;
+
+  --color-emerald-50: var(--color-green-50);
+  --color-emerald-100: var(--color-green-100);
+  --color-emerald-200: var(--color-green-200);
+  --color-emerald-300: var(--color-green-300);
+  --color-emerald-400: var(--color-green-400);
+  --color-emerald-500: var(--color-green-500);
+  --color-emerald-600: var(--color-green-600);
+  --color-emerald-700: var(--color-green-700);
+  --color-emerald-800: var(--color-green-800);
+  --color-emerald-900: var(--color-green-900);
+
+  --app-gradient-start: #0f2345;
+  --app-gradient-mid: #1d3f73;
+  --app-gradient-end: #2b5ca1;
+}
+
+.dark body {
+  background-color: var(--color-slate-50);
+}
+
+.dark .bg-white {
+  background-color: var(--color-slate-100) !important;
+}
+
+.dark .border-white {
+  border-color: var(--color-slate-300) !important;
+}
+
+.dark .bg-primary-900 {
+  background-color: var(--app-gradient-start) !important;
+}
+
+.dark .from-primary-900 {
+  --tw-gradient-from: var(--app-gradient-start) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--app-gradient-start) 0%, transparent) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.dark .via-primary-700 {
+  --tw-gradient-to: color-mix(in srgb, var(--app-gradient-mid) 0%, transparent) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--app-gradient-mid) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+.dark .to-primary-600 {
+  --tw-gradient-to: var(--app-gradient-end) var(--tw-gradient-to-position) !important;
+}
+
+.dark .to-primary-500 {
+  --tw-gradient-to: color-mix(in srgb, var(--app-gradient-end) 85%, white) var(--tw-gradient-to-position) !important;
+}
+
+/* Hide scrollbars globally while preserving scroll behavior */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
+/* Opt in visible scrollbar for chat message pane */
+.chat-messages-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-200) transparent;
+}
+
+.chat-messages-scroll::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+}
+
+.chat-messages-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-200);
+  border-radius: 9999px;
+}
+
+.mobile-messages-scroll {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
