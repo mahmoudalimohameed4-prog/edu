@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile, updateProfile, updateProfilePicture, getMyItems, createItem, getAllCategories, sendOTP, verifyOTP } from "../api/api";
 import { Plus, X, Upload } from "lucide-react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import {
   User,
   Phone,
@@ -726,40 +728,57 @@ function Profile() {
               disabled
               helper="البريد الالكتروني الجامعي مطلوب للتحقق."
             />
-            <div className="flex flex-col gap-2">
-              <InputField
-                label="رقم الهاتف"
-                icon={Phone}
-                value={form.phone}
-                onChange={(e) => {
-                  upd("phone")(e);
-                }}
-                disabled={isPhoneVerified || verificationStep === "verifying_old"}
-                placeholder="+20XXXXXXXXXX"
-                suffix={
-                  <div className="flex gap-1">
-                    {isPhoneVerified && verificationStep === "idle" && (
-                      <button
-                        onClick={startChangePhone}
-                        className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md hover:bg-slate-200 transition-colors"
-                      >
-                        تغيير
-                      </button>
-                    )}
-                    {!isPhoneVerified && !showOtpInput && verificationStep !== "verifying_old" && (
-                      <button
-                        onClick={() => handleSendOtp()}
-                        disabled={isSendingOtp}
-                        className="text-[10px] font-bold text-primary bg-primary-50 px-2 py-1 rounded-md hover:bg-primary-100 transition-colors"
-                      >
-                        {isSendingOtp ? "جاري الإرسال..." : "تحقق"}
-                      </button>
-                    )}
-                  </div>
-                }
-              />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs sm:text-sm text-slate-500 text-right">رقم الهاتف</label>
+              <div className="relative" dir="ltr">
+                <PhoneInput
+                  country={"eg"}
+                  value={form.phone}
+                  onChange={(phone) => setForm({ ...form, phone: "+" + phone })}
+                  disabled={isPhoneVerified || verificationStep === "verifying_old"}
+                  inputStyle={{
+                    width: '100%',
+                    height: '40px',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #e2e8f0',
+                    backgroundColor: (isPhoneVerified || verificationStep === "verifying_old") ? '#f8fafc' : '#fff',
+                    fontSize: '0.875rem',
+                    color: (isPhoneVerified || verificationStep === "verifying_old") ? '#94a3b8' : '#334155',
+                    paddingLeft: '45px',
+                    textAlign: 'left'
+                  }}
+                  buttonStyle={{
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    borderRadius: '0.5rem 0 0 0.5rem',
+                  }}
+                  dropdownStyle={{
+                    textAlign: 'left',
+                    borderRadius: '0.5rem',
+                  }}
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex gap-1">
+                  {isPhoneVerified && verificationStep === "idle" && (
+                    <button
+                      onClick={startChangePhone}
+                      className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md hover:bg-slate-200 transition-colors"
+                    >
+                      تغيير
+                    </button>
+                  )}
+                  {!isPhoneVerified && !showOtpInput && verificationStep !== "verifying_old" && (
+                    <button
+                      onClick={() => handleSendOtp()}
+                      disabled={isSendingOtp}
+                      className="text-[10px] font-bold text-primary bg-primary-50 px-2 py-1 rounded-md hover:bg-primary-100 transition-colors"
+                    >
+                      {isSendingOtp ? "جاري الإرسال..." : "تحقق"}
+                    </button>
+                  )}
+                </div>
+              </div>
               {showOtpInput && (
-                <div className="flex gap-2 items-end justify-start animate-in slide-in-from-top-2 duration-300">
+                <div className="flex gap-2 items-end justify-start animate-in slide-in-from-top-2 duration-300 mt-2">
                   <div className="flex flex-col gap-1 items-start flex-1 max-w-[120px]">
                     <label className="text-[10px] text-slate-400">
                       {verificationStep === "verifying_old" ? "رمز الرقم القديم" : "رمز الرقم الجديد"}
@@ -793,11 +812,36 @@ function Profile() {
                 <p className="text-[10px] text-primary text-right">أدخل الآن رقم هاتفك الجديد للتحقق منه</p>
               )}
             </div>
-            <InputField
-              label="رقم هاتف بديل(اختياري)"
-              icon={Phone}
-              value={form.phone2}
-              onChange={upd("phone2")}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs sm:text-sm text-slate-500 text-right">رقم هاتف بديل(اختياري)</label>
+              <div className="relative" dir="ltr">
+                <PhoneInput
+                  country={"eg"}
+                  value={form.phone2}
+                  onChange={(phone) => setForm({ ...form, phone2: "+" + phone })}
+                  inputStyle={{
+                    width: '100%',
+                    height: '40px',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #e2e8f0',
+                    backgroundColor: '#fff',
+                    fontSize: '0.875rem',
+                    color: '#334155',
+                    paddingLeft: '45px',
+                    textAlign: 'left'
+                  }}
+                  buttonStyle={{
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    borderRadius: '0.5rem 0 0 0.5rem',
+                  }}
+                  dropdownStyle={{
+                    textAlign: 'left',
+                    borderRadius: '0.5rem',
+                  }}
+                />
+              </div>
+            </div>
               placeholder="+20XXXXXXXXXX"
             />
           </div>

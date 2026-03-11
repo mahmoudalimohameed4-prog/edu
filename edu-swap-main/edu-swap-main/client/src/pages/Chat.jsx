@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { getConversations, getMessages, sendChat } from "../api/api";
+import socket, { connectSocket } from "../api/socket";
 import {
   Search,
   Send,
@@ -82,6 +83,45 @@ const Chat = () => {
     fetchChats();
   }, []);
 
+  // Socket Connection and Real-time listener
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.id) {
+      connectSocket(user.id);
+    }
+
+    const handleNewMessage = (newMsg) => {
+      // If the message is from the active contact, add it to messages
+      if (activeId && (newMsg.senderId === activeId || newMsg.receiverId === activeId)) {
+        setMessages(prev => {
+          // Avoid duplicates if already added by handleSendMessage
+          if (prev.find(m => m.id === newMsg.id)) return prev;
+          return [...prev, {
+            ...newMsg,
+            time: new Date(newMsg.time).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+          }];
+        });
+      }
+
+      // Update contacts list last message
+      setContacts(prev => prev.map(c => 
+        (c.id === newMsg.senderId || c.id === newMsg.receiverId)
+        ? { 
+            ...c, 
+            lastMsg: newMsg.text, 
+            time: "الآن",
+            unread: (activeId === c.id) ? c.unread : (c.unread + 1)
+          } 
+        : c
+      ));
+    };
+
+    socket.on("receive_message", handleNewMessage);
+    return () => {
+      socket.off("receive_message", handleNewMessage);
+    };
+  }, [activeId]);
+
   // Fetch messages when active contact changes
   useEffect(() => {
     if (!activeId) return;
@@ -93,13 +133,14 @@ const Chat = () => {
           time: new Date(m.time).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
         }));
         setMessages(mappedMsgs);
+        
+        // Clear unread for this contact
+        setContacts(prev => prev.map(c => c.id === activeId ? { ...c, unread: 0 } : c));
       } catch (error) {
         console.error("Failed to fetch messages:", error);
       }
     };
     fetchMsgs();
-    const interval = setInterval(fetchMsgs, 5000); // Polling for new messages
-    return () => clearInterval(interval);
   }, [activeId]);
 
   useEffect(() => {

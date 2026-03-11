@@ -28,6 +28,11 @@ router.get('/messages/:otherId', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
     try {
         const newChat = await createChat({ ...req.body, senderId: req.user.id });
+        
+        // Real-time delivery via socket
+        const { emitToUser } = await import("../../socket/socket.handler.js");
+        emitToUser(req.body.receiverId, "receive_message", newChat);
+
         return res.status(201).json({ msg: 'created', data: newChat });
     } catch (error) {
         return res.status(500).json({ msg: error.message });

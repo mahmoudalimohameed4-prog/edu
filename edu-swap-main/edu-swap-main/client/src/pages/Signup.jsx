@@ -3,6 +3,8 @@ import { Check, Chrome, Eye, EyeOff, Mail, Phone, ShieldCheck, ArrowRight, Loade
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { signup, sendOTP, verifyOTP as confirmOTP } from "../api/api";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -125,15 +127,35 @@ const Signup = () => {
 
               <div className="group">
                 <label className="block text-sm font-bold text-slate-700 mb-1.5 mr-1">رقم الهاتف</label>
-                <div className="relative">
-                  <input
-                    type="tel"
-                    placeholder="01xxxxxxxxx"
+                <div className="relative" dir="ltr">
+                   <PhoneInput
+                    country={"eg"}
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 text-slate-700 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-right"
+                    onChange={(phone) => setForm({ ...form, phone: "+" + phone })}
+                    inputStyle={{
+                      width: '100%',
+                      height: '54px',
+                      borderRadius: '1rem',
+                      border: '1px solid #e2e8f0',
+                      backgroundColor: '#f8fafc',
+                      fontSize: '1rem',
+                      color: '#334155',
+                      paddingLeft: '50px',
+                      textAlign: 'left'
+                    }}
+                    buttonStyle={{
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      borderRadius: '1rem 0 0 1rem',
+                      paddingLeft: '10px'
+                    }}
+                    dropdownStyle={{
+                      textAlign: 'left',
+                      borderRadius: '1rem',
+                      marginTop: '8px'
+                    }}
+                    placeholder="رقم الهاتف"
                   />
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 </div>
               </div>
 

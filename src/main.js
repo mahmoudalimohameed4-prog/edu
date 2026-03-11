@@ -8,13 +8,21 @@ dotenv.config();
 import bootstrap from "./app.bootstrap.js";
 
 
+import http from "http";
+import { initSocket } from "./socket/socket.handler.js";
+
 const app = bootstrap();
+const server = http.createServer(app);
+
+// Initialize Socket.io
+initSocket(server);
 
 // Start the server locally if not running in a Vercel serverless environment
 if (!process.env.VERCEL) {
     const port = process.env.PORT || 4000;
-    app.listen(port, () => console.log(`server is running on port ${port}`));
+    server.listen(port, () => console.log(`🚀 server is running on port ${port} (Socket.io enabled)`));
 }
 
-// Export the Express API for Vercel's serverless functions
-export default app;
+// Export the server instance for potential serverless needs, 
+// though sockets won't work in standard serverless functions.
+export default server;
