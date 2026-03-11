@@ -1,21 +1,53 @@
 import mysql2 from 'mysql2/promise'
 
 /**
- * Database Connection
- * Establishes a connection to the MySQL database using mysql2/promise.
- * @returns {Promise<Connection>} MySQL connection object
+ * Database Connection Pool
+ * Supports both Railway (DATABASE_URL) and individual env vars.
+ * Uses connection pooling for better performance in production.
  */
-export const connected = async () => {
-    return await mysql2.createConnection({
+
+let pool;
+
+const createPool = () => {
+    // Railway provides a full DATABASE_URL - use it if available
+    if (process.env.DATABASE_URL) {
+        return mysql2.createPool({
+            uri: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false },
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+        });
+    }
+
+    // Fallback: use individual environment variables (local or Vercel)
+    return mysql2.createPool({
         host: process.env.DB_HOST || 'localhost',
         user: process.env.DB_USER || 'root',
-        port: process.env.DB_PORT || 3306,
+        port: parseInt(process.env.DB_PORT) || 3306,
         password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'eduswap_fixed'
+        database: process.env.DB_NAME || 'eduswap_fixed',
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+    });
+};
 
-    }).catch(error => {
-        console.log('fail to connect database');
+pool = createPool();
 
-    })
-}
-export default connected()
+/**
+ * Get a connection from the pool
+ * @returns {Promise<PoolConnection>}
+ */
+export const connected = async () => {
+    try {
+        const connection = await pool.getConnection();
+        return connection;
+    } catch (error) {
+        console.error('❌ Failed to connect to database:', error.message);
+        throw error;
+    }
+};
+
+export default pool;
