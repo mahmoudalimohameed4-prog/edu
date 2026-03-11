@@ -15,6 +15,8 @@
     ],
     "env": {
         "DATABASE_URL": "mysql://root:czXLSewBaHauhCifXPxwOZkPDUnJNTIF@metro.proxy.rlwy.net:37574/railway",
-        "JWT_SECRET": "superSecretKey123"
+        "JWT_SECRET": "superSecretKey123",
+        "EMAIL_USER": "mahmoudalimohameed4@gmail.com",
+        "EMAIL_PASS": "tynp jida lqwk yzgj"
     }
 }
