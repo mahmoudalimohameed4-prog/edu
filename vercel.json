@@ -12,5 +12,9 @@
             "src": "/(.*)",
             "dest": "src/main.js"
         }
-    ]
+    ],
+    "env": {
+        "DATABASE_URL": "mysql://root:czXLSewBaHauhCifXPxwOZkPDUnJNTIF@metro.proxy.rlwy.net:37574/railway",
+        "JWT_SECRET": "superSecretKey123"
+    }
 }
