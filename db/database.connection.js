@@ -1,41 +1,36 @@
 import mysql2 from 'mysql2/promise'
 
 /**
- * Database Connection Pool
- * Supports both Railway (DATABASE_URL) and individual env vars.
- * Uses connection pooling for better performance in production.
+ * Database Connection Pool - Local XAMPP Setup (Alt Location)
  */
-
-let pool;
+let pool = null;
 
 const createPool = () => {
-    // Local Connection (XAMPP)
-    return mysql2.createPool({
-        host: process.env.DB_HOST || 'localhost',
-        user: process.env.DB_USER || 'root',
-        port: parseInt(process.env.DB_PORT) || 3306,
-        password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'eduswap_fixed',
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0
-    });
-};
+    const host = process.env.DB_HOST || 'localhost';
+    const dbName = process.env.DB_NAME || 'eduswap_fixed';
 
-pool = createPool();
-
-/**
- * Get a connection from the pool
- * @returns {Promise<PoolConnection>}
- */
-export const connected = async () => {
     try {
-        const connection = await pool.getConnection();
-        return connection;
-    } catch (error) {
-        console.error('❌ Failed to connect to database:', error.message);
-        throw error;
+        return mysql2.createPool({
+            host: host,
+            user: process.env.DB_USER || 'root',
+            port: Number(process.env.DB_PORT) || 3306,
+            password: process.env.DB_PASSWORD || '',
+            database: dbName,
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+        });
+    } catch (err) {
+        console.error('❌ [DB] POOL CREATION FAILED:', err.message);
+        throw err;
     }
 };
 
-export default pool;
+export const connected = async () => {
+    if (!pool) {
+        pool = createPool();
+    }
+    return pool;
+};
+
+export default connected;
