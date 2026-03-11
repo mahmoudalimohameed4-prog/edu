@@ -2,50 +2,63 @@ import mysql2 from 'mysql2/promise'
 
 /**
  * Database Connection Pool
- * Supports both Railway (DATABASE_URL) and individual env vars.
- * Optimized for Vercel Serverless Functions.
  */
 let pool = null;
 
-const getPool = () => {
-    if (!pool) {
-        // Option 1: Using DATABASE_URL (Railway typical)
+const createPool = () => {
+    // 💡 Diagnostic: Log environment status (Safe)
+    const host = process.env.DB_HOST;
+    const dbName = process.env.DB_NAME;
+    const hasUrl = !!process.env.DATABASE_URL;
+
+    console.log(`🔍 [DB] Env Check: Host=${host || 'MISSING'}, Name=${dbName || 'MISSING'}, HasURL=${hasUrl}`);
+
+    try {
+        // Option 1: URL
         if (process.env.DATABASE_URL) {
-            pool = mysql2.createPool({
+            console.log('🚀 [DB] Using DATABASE_URL');
+            return mysql2.createPool({
                 uri: process.env.DATABASE_URL,
                 ssl: { rejectUnauthorized: false },
                 waitForConnections: true,
-                connectionLimit: 5, // Keep small for serverless
+                connectionLimit: 4,
                 queueLimit: 0,
                 enableKeepAlive: true
             });
-            console.log('\x1b[32m%s\x1b[0m', '✅ Database connection pool created using DATABASE_URL');
-        } else {
-            // Option 2: Fallback to individual variables
-            pool = mysql2.createPool({
-                host: process.env.DB_HOST || 'localhost',
-                user: process.env.DB_USER || 'root',
-                port: Number(process.env.DB_PORT) || 3306,
-                password: process.env.DB_PASSWORD || '',
-                database: process.env.DB_NAME || 'railway',
-                // Support SSL for Railway or specific env var
-                ssl: (process.env.DB_SSL === 'true' || process.env.DB_HOST?.includes('rlwy.net'))
-                    ? { rejectUnauthorized: false }
-                    : undefined,
-                waitForConnections: true,
-                connectionLimit: 5,
-                queueLimit: 0,
-                enableKeepAlive: true
-            });
-            console.log('\x1b[32m%s\x1b[0m', '✅ Database connection pool created using environment variables');
         }
+
+        // Option 2: Individual Vars
+        const finalHost = host || 'localhost';
+        console.log(`🚀 [DB] Connecting to ${finalHost}:${process.env.DB_PORT || 3306}`);
+
+        return mysql2.createPool({
+            host: finalHost,
+            user: process.env.DB_USER || 'root',
+            port: Number(process.env.DB_PORT) || 3306,
+            password: process.env.DB_PASSWORD || '',
+            database: dbName || 'railway',
+            ssl: { rejectUnauthorized: false },
+            waitForConnections: true,
+            connectionLimit: 4,
+            queueLimit: 0,
+            enableKeepAlive: true
+        });
+    } catch (err) {
+        console.error('❌ [DB] POOL CREATION FAILED:', err.message);
+        throw err;
+    }
+};
+
+/**
+ * Lazy function to get the pool
+ * This ensures process.env is read at runtime, not at build/import time.
+ */
+export const connected = async () => {
+    if (!pool) {
+        pool = createPool();
     }
     return pool;
 };
 
-export const connected = () => {
-    return getPool();
-};
-
-export default getPool();
-
+// For backward compatibility if anything uses default import
+export default connected;
