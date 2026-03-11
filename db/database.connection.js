@@ -9,25 +9,13 @@ import mysql2 from 'mysql2/promise'
 let pool;
 
 const createPool = () => {
-    // Railway provides a full DATABASE_URL - use it if available
-    if (process.env.DATABASE_URL) {
-        return mysql2.createPool({
-            uri: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false },
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0
-        });
-    }
-
-    // Fallback: use individual environment variables (local or Vercel)
+    // Local Connection (XAMPP)
     return mysql2.createPool({
         host: process.env.DB_HOST || 'localhost',
         user: process.env.DB_USER || 'root',
         port: parseInt(process.env.DB_PORT) || 3306,
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_NAME || 'eduswap_fixed',
-        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0
